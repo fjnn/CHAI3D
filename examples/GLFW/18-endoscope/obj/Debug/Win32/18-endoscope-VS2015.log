@@ -1,2 +1,9 @@
-﻿  UsartDevice.cpp
-  18-endoscope-VS2015.vcxproj -> D:\Workspace\Gitkraken\SimulationWithChai3D\examples\GLFW\18-endoscope\../../../bin/win-Win32/18-endoscope.exe
+﻿  18-endoscope.cpp
+  UsartDevice.cpp
+  Serial.cpp
+  test.cpp
+libraries\Serial.cpp(134): warning C4018: '<': signed/unsigned mismatch
+test.cpp(204): warning C4018: '<': signed/unsigned mismatch
+test.cpp(109): warning C4101: 'SerialBuffer': unreferenced local variable
+test.cpp(108): warning C4101: 'TempChar': unreferenced local variable
+  18-endoscope-VS2015.vcxproj -> D:\Workspace\Gitkraken\tubitak-endoscope-simulation\examples\GLFW\18-endoscope\../../../bin/win-Win32/18-endoscope.exe

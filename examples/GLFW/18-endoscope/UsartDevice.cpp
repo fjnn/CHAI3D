@@ -24,6 +24,25 @@ namespace chai3d {
 	/**-----------------------------------
 	Our custom defined functions 
 	-----------------------------------**/
+	//static void decouple_xyz(cVector3d &angles) {
+	//	const double threshold = 0.000001;
+	//	double zoom = abs(angles.y()) - threshold;
+	//	double rotY = abs(angles.x());
+	//	double rotZ = abs(angles.z());
+	//	double diffY = abs(rotY) - abs(zoom);
+	//	double diffZ = abs(rotZ) - abs(zoom);
+	//	// if the zoom is bigger than both the Y and Z rotations
+	//	if (diffY < 0 && diffZ < 0) {
+	//		// we choose to zoom only, and disable rotation
+	//		angles.x(0.0);
+	//		angles.z(0.0);
+	//	}
+	//	else {
+	//		// else we disable zoom
+	//		angles.y(0.0);
+	//	}
+	//}
+
 	/* Smooth the given X, Y, Z values to a finite floating point precision */
 	static cVector3d filter_xyz(Eigen::Vector4d &xyz) {
 		const double resolution = 10000.0;
@@ -40,16 +59,17 @@ namespace chai3d {
 
 	/* Updates device's position and orientation */
 	void UsartDevice::updateDevice() {
-		this->origin.x(0); //s3 = s* + s; this is s.
+		// reset origin
+		double zoom = this->angle.y()/500.0;
+		this->origin.x(0.0); //s3 = s* + s; this is s.
 		this->origin.y(0.0);
 		this->origin.z(0.0);
-		
 		
 		double theta1, theta2, s3;
 		theta1 = this->angle.x();
 		theta2 = -this->angle.z();
-		//s3 = this->origin.x() + this->pivotOffset;
-		s3 = 0.01;
+		s3 = zoom + this->pivotOffset;
+		//s3 = 0.01;
 
 		/* Create Homogenous Transformation Matrix */
 		//Update Rotation Matrix
@@ -71,7 +91,7 @@ namespace chai3d {
 		Eigen::Vector4d originHomogenous(this->origin.x(), this->origin.y(), this->origin.z(), 1.0);
 		Eigen::Vector4d resultV4d(TRinvT * originHomogenous);
 		this->origin = filter_xyz(resultV4d);
-		std::cout << this->origin << std::endl;
+		//std::cout << this->origin << std::endl;
 	}
 
 	/* Read raw data via USART-USB interface and extracts the values from it and saves them so they can be used by other functions */
@@ -99,7 +119,7 @@ namespace chai3d {
 			/* Save them to this object's member variables */
 			this->angle.set(angle_x, angle_y, angle_z);
 
-			//printf("%.2f, %.2f, %.2f\n", angle_x, angle_y, angle_z);
+			printf("%.2f, %.2f, %.2f\n", angle_x, angle_y, angle_z);
 		}
 	}
 

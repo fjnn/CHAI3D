@@ -16,7 +16,7 @@ private:
 	int parity;
 
 public:
-	Serial(int portNumber, int baudRate = CBR_57600, int byteSize = 8, int stopBits = TWOSTOPBITS, int parity = NOPARITY);
+	Serial(int portNumber, int baudRate = CBR_57600, int byteSize = 8, int stopBits = ONESTOPBIT, int parity = NOPARITY);
 	~Serial();
 
 	bool open();
