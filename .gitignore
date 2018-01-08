@@ -402,6 +402,7 @@ s
 !.gitignore
 !/examples
 .vs/
+18-endoscope-VS2015.log
 *.tlog
 *.pdb
 *.obj
