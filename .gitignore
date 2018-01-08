@@ -402,7 +402,6 @@ s
 !.gitignore
 !/examples
 .vs/
-**/.vs/
 *.tlog
 *.pdb
 *.obj
