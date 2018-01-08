@@ -11,7 +11,8 @@ namespace chai3d {
 		: cGenericHapticDevice(0),
 		port{ device_port },
 		serial{ Serial(device_port) },
-		origin(0.0065, 0.0, 0.0)
+		origin(0.0065, 0.0, 0.0), 
+		prev_origin(0.0065, 0.0, 0.0)
 	{
 		this->rotation.identity();
 	}
@@ -152,9 +153,11 @@ namespace chai3d {
 		this->getData();
 		this->updateDevice();
 		
-		a_position.x(this->origin.x());
-		a_position.y(this->origin.y());
-		a_position.z(this->origin.z());
+		a_position.x(this->origin.x() + prev_origin.x());
+		a_position.y(this->origin.y() + prev_origin.y());
+		a_position.z(this->origin.z() + prev_origin.z());
+
+		prev_origin = a_position;
 
 		return m_deviceReady;
 	}
