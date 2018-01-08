@@ -105,8 +105,6 @@ void main_bak2(void)
 	char  ComPortName[] = "\\\\.\\COM14";  // Name of the Serial port(May Change) to be opened,
 	BOOL  Status;                          // Status of the various operations 
 	DWORD dwEventMask;                     // Event mask to trigger
-	char  TempChar;                        // Temperory Character
-	char  SerialBuffer[256];               // Buffer Containing Rxed Data
 	DWORD NoBytesRead;                     // Bytes read by ReadFile()
 	int i = 0;
 
@@ -201,7 +199,7 @@ void main_bak2(void)
 		{
 			char buff[10];
 			Status = ReadFile(hComm, buff, 10, &NoBytesRead, NULL);
-			for (int i = 0; i < NoBytesRead; i++) {
+			for (unsigned int i = 0; i < NoBytesRead; i++) {
 				printf("%u", buff[i]);
 			}
 			printf("\n");
