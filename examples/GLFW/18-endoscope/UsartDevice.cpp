@@ -6,6 +6,7 @@
 
 namespace chai3d {
 
+	/*==================================================================*/
 	/* Constructor */
 	UsartDevice::UsartDevice(int device_port)
 		: cGenericHapticDevice(0),
@@ -17,6 +18,7 @@ namespace chai3d {
 		this->rotation.identity();
 	}
 
+	/*==================================================================*/
 	/* Destructor */
 	UsartDevice::~UsartDevice() {
 
@@ -25,10 +27,9 @@ namespace chai3d {
 	/**-----------------------------------
 	Our custom defined functions 
 	-----------------------------------**/
-
+	/*==================================================================*/
 	/* Smooth the given X, Y, Z values to a finite floating point precision */
-	static cVector3d filter_xyz(Eigen::Vector4d &xyz) {
-		const double resolution = 10000.0;
+	static cVector3d filter_xyz(Eigen::Vector4d &xyz, const double resolution) {
 		int x = xyz.x() * resolution;
 		int y = xyz.y() * resolution;
 		int z = xyz.z() * resolution;
@@ -40,10 +41,11 @@ namespace chai3d {
 		return output;
 	}
 
+	/*==================================================================*/
 	/* Updates device's position and orientation */
 	void UsartDevice::updateDevice() {
 		// reset origin
-		double zoom = this->angle.y()/1000.0;
+		double zoom = this->angle.y()/this->zoom_scale;
 		this->origin.x(0.0); //s3 = s* + s; this is s.
 		this->origin.y(0.0);
 		this->origin.z(0.0);
@@ -82,14 +84,13 @@ namespace chai3d {
 		//Update Position
 		Eigen::Vector4d originHomogenous(this->origin.x(), this->origin.y(), this->origin.z(), 1.0);
 		Eigen::Vector4d resultV4d(TRinvT * originHomogenous);
-		this->origin = filter_xyz(resultV4d);
+		this->origin = filter_xyz(resultV4d, this->filter_resolution);
 		//std::cout << this->origin << std::endl;
 	}
 
+	/*==================================================================*/
 	/* Read raw data via USART-USB interface and extracts the values from it and saves them so they can be used by other functions */
 	void UsartDevice::getData() {
-		const double scale = 100.0;
-
 		if (m_deviceReady) {
 			/* read preamble (header) which is 0xAA 0xAA 0xAA 0xAA 0xAA 0xAA */
 			int count = 0;
@@ -110,20 +111,18 @@ namespace chai3d {
 			memcpy(&angle_x, buffer, 8);
 			memcpy(&angle_y, buffer + 8, 8);
 			memcpy(&angle_z, buffer + 16, 8);
-			angle_x /= scale;
-			angle_y /= scale;
-			angle_z /= scale;
+			/* scale angles */
+			angle_x /= this->angle_scale;
+			angle_y /= this->angle_scale;
+			angle_z /= this->angle_scale;
+
 			/* Save them to this object's member variables */
-			//this->increment.set(this->increment.x() + angle_x, this->increment.y() + angle_y, this->increment.z() + angle_z);
-			//this->angle.set(this->angle.x() + this->increment.x(), this->angle.y() + this->increment.y(), this->angle.z() + this->increment.z());
-
 			double temp_angle_x, temp_angle_y, temp_angle_z;
-
 			temp_angle_x = this->angle.x() + angle_x;
 			temp_angle_y = this->angle.y() + angle_y;
 			temp_angle_z = this->angle.z() + angle_z;
 
-			// clamping the coming data in between angle limits
+			// clamping the incoming data in between angle limits
 			if (abs(temp_angle_x) > angle_limit) {
 				if (temp_angle_x < -angle_limit)
 					temp_angle_x = -angle_limit;
@@ -142,8 +141,8 @@ namespace chai3d {
 			this->angle.set(temp_angle_x, temp_angle_y, temp_angle_z);
 
 			//this->angle.set(angle_x, angle_y, angle_z);
-			std::cout << this->angle << std::endl;
-			printf("%.2f, %.2f, %.2f\n\n", angle_x, angle_y, angle_z);
+			std::cout << this->angle << std::endl;  // print clamped and scaled angles
+			printf("%.2f, %.2f, %.2f\n\n", angle_x, angle_y, angle_z);  // print raw received angles
 		}
 	}
 
@@ -153,6 +152,7 @@ namespace chai3d {
 	These are the virtual functions defined in the cGenericHapticDevice that we need to implement so the cGenericTool class
 	can work with our device without having to modify it's code 
 	------------------------------------------------------------ **/
+	/*==================================================================*/
 	/* Open USART Connection */
 	bool UsartDevice::open() {
 		this->m_deviceReady = this->serial.open();
@@ -166,7 +166,7 @@ namespace chai3d {
 	}
 
 
-
+	/*==================================================================*/
 	/* Close USART Connection */
 	bool UsartDevice::close() {
 		if (this->serial.close()) {
@@ -179,7 +179,7 @@ namespace chai3d {
 	}
 
 
-
+	/*==================================================================*/
 	/* Return Orientation of Device */
 	bool UsartDevice::getRotation(cMatrix3d& a_rotation) {
 		//a_rotation = this->rotation + prev_orientation;
@@ -195,7 +195,7 @@ namespace chai3d {
 	}
 
 
-
+	/*==================================================================*/
 	/* Return Position of Device */
 	bool UsartDevice::getPosition(cVector3d& a_position) {
 		/* We call this function only here because cGenericTool::updateFromDevice calls getPosition first
@@ -213,7 +213,7 @@ namespace chai3d {
 	}
 
 
-
+	/*==================================================================*/
 	/* Returns a structure containing information about our device and its capabilities */
 	cHapticDeviceInfo UsartDevice::getSpecifications() {
 		/* todo */

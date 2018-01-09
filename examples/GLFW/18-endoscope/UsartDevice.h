@@ -32,18 +32,21 @@ namespace chai3d {
 
 	class UsartDevice : public cGenericHapticDevice {
 	private:
-		/* Variables related to our Serial communication over USART */
-		Serial serial;  // This class provides our USART-USB functionality
-		int port;  // The port of our USART-USB device
-		/* position of the endoscope 3D model in the simulation (these values are very sensitive to small changes) */
-		cVector3d origin;
+		/* Calculation Parameters */
 		const double pivotOffset = 0.0;
 		const double angle_limit = 45.0;
 		const double zoom_limit = 0.01;
-		/* Gyroscope Rotation values. These are received from our USART device */
-		cVector3d angle;
-		/* Rotation Matrix */
-		cMatrix3d rotation;
+		const double angle_scale = 75.0;
+		const double zoom_scale = 1000.0;
+		const double filter_resolution = 10000.0;
+		/* Variables related to our Serial communication over USART */
+		Serial serial;  // This class provides our USART-USB functionality
+		int port;  // The port of our USART-USB device
+		/* Position and Rotation variables */
+		cVector3d angle;  // Gyroscope Rotation values. These are received from our USART device
+		cVector3d origin;  // position of the endoscope 3D model in the simulation (these values are very sensitive to small changes)
+		cMatrix3d rotation;  // Rotation Matrix
+
 		/* Our own custom defined functions */
 		void getData();
 		void updateDevice();
