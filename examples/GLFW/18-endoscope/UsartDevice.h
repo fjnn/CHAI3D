@@ -37,7 +37,6 @@ namespace chai3d {
 		int port;  // The port of our USART-USB device
 		/* position of the endoscope 3D model in the simulation (these values are very sensitive to small changes) */
 		cVector3d origin;
-		cVector3d increment;
 		const double pivotOffset = 0.0;
 		/* Gyroscope Rotation values. These are received from our USART device */
 		cVector3d angle;

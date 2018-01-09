@@ -12,7 +12,7 @@ namespace chai3d {
 		port{ device_port },
 		serial{ Serial(device_port) },
 		origin(0.0065, 0.0, 0.0), 
-		increment(0.0, 0.0, 0.0)
+		angle(0.0, 0.0, 0.0)
 	{
 		this->rotation.identity();
 	}
@@ -29,15 +29,14 @@ namespace chai3d {
 	/* Smooth the given X, Y, Z values to a finite floating point precision */
 	static cVector3d filter_xyz(Eigen::Vector4d &xyz) {
 		const double resolution = 10000.0;
-		const double scale = 100.0;
 		int x = xyz.x() * resolution;
 		int y = xyz.y() * resolution;
 		int z = xyz.z() * resolution;
 
 		cVector3d output;
-		output.x((double)x / (resolution * scale));
-		output.y((double)y / (resolution * scale));
-		output.z((double)z / (resolution * scale));
+		output.x((double)x / (resolution));
+		output.y((double)y / (resolution));
+		output.z((double)z / (resolution));
 		return output;
 	}
 
@@ -80,6 +79,8 @@ namespace chai3d {
 
 	/* Read raw data via USART-USB interface and extracts the values from it and saves them so they can be used by other functions */
 	void UsartDevice::getData() {
+		const double scale = 100.0;
+
 		if (m_deviceReady) {
 			/* read preamble (header) which is 0xAA 0xAA 0xAA 0xAA 0xAA 0xAA */
 			int count = 0;
@@ -100,11 +101,16 @@ namespace chai3d {
 			memcpy(&angle_x, buffer, 8);
 			memcpy(&angle_y, buffer + 8, 8);
 			memcpy(&angle_z, buffer + 16, 8);
+			angle_x /= scale;
+			angle_y /= scale;
+			angle_z /= scale;
 			/* Save them to this object's member variables */
-			this->increment.set(this->increment.x() + angle_x, this->increment.y() + angle_y, this->increment.z() + angle_z);
-			this->angle.set(this->angle.x() + this->increment.x(), this->angle.y() + this->increment.y(), this->angle.z() + this->increment.z());
-
-			printf("%.2f, %.2f, %.2f\n", angle_x, angle_y, angle_z);
+			//this->increment.set(this->increment.x() + angle_x, this->increment.y() + angle_y, this->increment.z() + angle_z);
+			//this->angle.set(this->angle.x() + this->increment.x(), this->angle.y() + this->increment.y(), this->angle.z() + this->increment.z());
+			this->angle.set(this->angle.x() + angle_x, this->angle.y() + angle_y, this->angle.z() + angle_z);
+			//this->angle.set(angle_x, angle_y, angle_z);
+			std::cout << this->angle << std::endl;
+			printf("%.2f, %.2f, %.2f\n\n", angle_x, angle_y, angle_z);
 		}
 	}
 
