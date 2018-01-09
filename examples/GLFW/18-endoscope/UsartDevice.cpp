@@ -52,6 +52,15 @@ namespace chai3d {
 		theta1 = this->angle.x();
 		theta2 = -this->angle.z();
 		s3 = zoom + this->pivotOffset;
+
+		if (abs(s3) > zoom_limit) {
+			if (s3 < -zoom_limit)
+				s3 = -zoom_limit;
+			else
+				s3 = zoom_limit;
+		}
+
+		this->origin.x(s3 - this->pivotOffset);
 		//s3 = 0.01;
 
 		/* Create Homogenous Transformation Matrix */
@@ -107,7 +116,31 @@ namespace chai3d {
 			/* Save them to this object's member variables */
 			//this->increment.set(this->increment.x() + angle_x, this->increment.y() + angle_y, this->increment.z() + angle_z);
 			//this->angle.set(this->angle.x() + this->increment.x(), this->angle.y() + this->increment.y(), this->angle.z() + this->increment.z());
-			this->angle.set(this->angle.x() + angle_x, this->angle.y() + angle_y, this->angle.z() + angle_z);
+
+			double temp_angle_x, temp_angle_y, temp_angle_z;
+
+			temp_angle_x = this->angle.x() + angle_x;
+			temp_angle_y = this->angle.y() + angle_y;
+			temp_angle_z = this->angle.z() + angle_z;
+
+			// clamping the coming data in between angle limits
+			if (abs(temp_angle_x) > angle_limit) {
+				if (temp_angle_x < -angle_limit)
+					temp_angle_x = -angle_limit;
+				else
+					temp_angle_x = angle_limit;
+			}
+
+			if (abs(temp_angle_z) > angle_limit) {
+				if (temp_angle_z < -angle_limit)
+					temp_angle_z = -angle_limit;
+				else
+					temp_angle_z = angle_limit;
+			}
+
+			//this->angle.set(this->angle.x() + angle_x, this->angle.y() + angle_y, this->angle.z() + angle_z);
+			this->angle.set(temp_angle_x, temp_angle_y, temp_angle_z);
+
 			//this->angle.set(angle_x, angle_y, angle_z);
 			std::cout << this->angle << std::endl;
 			printf("%.2f, %.2f, %.2f\n\n", angle_x, angle_y, angle_z);

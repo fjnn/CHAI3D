@@ -38,6 +38,8 @@ namespace chai3d {
 		/* position of the endoscope 3D model in the simulation (these values are very sensitive to small changes) */
 		cVector3d origin;
 		const double pivotOffset = 0.0;
+		const double angle_limit = 45.0;
+		const double zoom_limit = 0.01;
 		/* Gyroscope Rotation values. These are received from our USART device */
 		cVector3d angle;
 		/* Rotation Matrix */
