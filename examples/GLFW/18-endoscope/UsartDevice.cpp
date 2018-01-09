@@ -12,7 +12,7 @@ namespace chai3d {
 		port{ device_port },
 		serial{ Serial(device_port) },
 		origin(0.0065, 0.0, 0.0), 
-		prev_origin(0.0065, 0.0, 0.0)
+		increment(0.0, 0.0, 0.0)
 	{
 		this->rotation.identity();
 	}
@@ -25,43 +25,26 @@ namespace chai3d {
 	/**-----------------------------------
 	Our custom defined functions 
 	-----------------------------------**/
-	//static void decouple_xyz(cVector3d &angles) {
-	//	const double threshold = 0.000001;
-	//	double zoom = abs(angles.y()) - threshold;
-	//	double rotY = abs(angles.x());
-	//	double rotZ = abs(angles.z());
-	//	double diffY = abs(rotY) - abs(zoom);
-	//	double diffZ = abs(rotZ) - abs(zoom);
-	//	// if the zoom is bigger than both the Y and Z rotations
-	//	if (diffY < 0 && diffZ < 0) {
-	//		// we choose to zoom only, and disable rotation
-	//		angles.x(0.0);
-	//		angles.z(0.0);
-	//	}
-	//	else {
-	//		// else we disable zoom
-	//		angles.y(0.0);
-	//	}
-	//}
 
 	/* Smooth the given X, Y, Z values to a finite floating point precision */
 	static cVector3d filter_xyz(Eigen::Vector4d &xyz) {
 		const double resolution = 10000.0;
+		const double scale = 100.0;
 		int x = xyz.x() * resolution;
 		int y = xyz.y() * resolution;
 		int z = xyz.z() * resolution;
 
 		cVector3d output;
-		output.x((double)x / resolution);
-		output.y((double)y / resolution);
-		output.z((double)z / resolution);
+		output.x((double)x / (resolution * scale));
+		output.y((double)y / (resolution * scale));
+		output.z((double)z / (resolution * scale));
 		return output;
 	}
 
 	/* Updates device's position and orientation */
 	void UsartDevice::updateDevice() {
 		// reset origin
-		double zoom = this->angle.y()/500.0;
+		double zoom = this->angle.y()/1000.0;
 		this->origin.x(0.0); //s3 = s* + s; this is s.
 		this->origin.y(0.0);
 		this->origin.z(0.0);
@@ -118,7 +101,8 @@ namespace chai3d {
 			memcpy(&angle_y, buffer + 8, 8);
 			memcpy(&angle_z, buffer + 16, 8);
 			/* Save them to this object's member variables */
-			this->angle.set(angle_x, angle_y, angle_z);
+			this->increment.set(this->increment.x() + angle_x, this->increment.y() + angle_y, this->increment.z() + angle_z);
+			this->angle.set(this->angle.x() + this->increment.x(), this->angle.y() + this->increment.y(), this->angle.z() + this->increment.z());
 
 			printf("%.2f, %.2f, %.2f\n", angle_x, angle_y, angle_z);
 		}
@@ -159,6 +143,14 @@ namespace chai3d {
 
 	/* Return Orientation of Device */
 	bool UsartDevice::getRotation(cMatrix3d& a_rotation) {
+		//a_rotation = this->rotation + prev_orientation;
+		//prev_orientation = a_rotation;
+
+		//a_rotation.addr(this->rotation, prev_orientation);
+		//a_rotation = this->rotation;
+		//prev_orientation = a_rotation;
+
+
 		a_rotation = this->rotation;
 		return m_deviceReady;
 	}
@@ -172,12 +164,11 @@ namespace chai3d {
 
 		this->getData();
 		this->updateDevice();
-		
-		a_position.x(this->origin.x() + prev_origin.x());
-		a_position.y(this->origin.y() + prev_origin.y());
-		a_position.z(this->origin.z() + prev_origin.z());
 
-		prev_origin = a_position;
+
+		a_position.x(this->origin.x());
+		a_position.y(this->origin.y());
+		a_position.z(this->origin.z());
 
 		return m_deviceReady;
 	}
