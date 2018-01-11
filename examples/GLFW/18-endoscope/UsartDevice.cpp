@@ -137,6 +137,13 @@ namespace chai3d {
 					temp_angle_z = angle_limit;
 			}
 
+			if (abs(temp_angle_y) > angle_limit) { // for zoom angle_y (x_axis in Chai3d)
+				if (temp_angle_y < -angle_limit)
+					temp_angle_y = -angle_limit;
+				else
+					temp_angle_y = angle_limit;
+			}
+
 			//this->angle.set(this->angle.x() + angle_x, this->angle.y() + angle_y, this->angle.z() + angle_z);
 			this->angle.set(temp_angle_x, temp_angle_y, temp_angle_z);
 

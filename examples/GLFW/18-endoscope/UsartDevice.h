@@ -33,11 +33,11 @@ namespace chai3d {
 	class UsartDevice : public cGenericHapticDevice {
 	private:
 		/* Calculation Parameters */
-		const double pivotOffset = 0.0;
+		const double pivotOffset = 0.013;  //#TODO: set the correct pivot offset
 		const double angle_limit = 45.0;
-		const double zoom_limit = 0.01;
-		const double angle_scale = 75.0;
-		const double zoom_scale = 1000.0;
+		const double zoom_limit = 0.04;  //#TODO: set an appropriate zoom limit
+		const double angle_scale = 15.0;
+		const double zoom_scale = 750.0;
 		const double filter_resolution = 10000.0;
 		/* Variables related to our Serial communication over USART */
 		Serial serial;  // This class provides our USART-USB functionality
