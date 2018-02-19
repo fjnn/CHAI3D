@@ -378,7 +378,7 @@ int main(int argc, char* argv[])
 	double angle_scale = 15.0;
 	double zoom_scale = 750.0;
 	double filter_resolution = 10000.0;
-	int polarity = 1;
+	int polarity = -1;
 
 	double angle_limit_user = 45.0;
 	double zoom_limit_user = 0.04;

@@ -61,8 +61,8 @@ namespace chai3d {
 		this->origin.z(0.0);
 		
 		double theta1, theta2, s3;
-		theta1 = this->angle.x();
-		theta2 = -this->angle.z();
+		theta1 = (this->angle.x())*this->polarity;
+		theta2 = -this->angle.z()*this->polarity;
 		s3 = zoom + this->pivotOffset;
 
 		if (abs(s3) > zoom_limit) {
