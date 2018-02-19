@@ -68,7 +68,13 @@ cCamera* cameraScope;
 cDirectionalLight *light;
 
 // a virtual object
-cMultiMesh* heart;
+//cMultiMesh* heart;
+
+// table of bitmap images
+//cBitmap* heart;
+
+// a few mesh objects
+cMesh* heart;
 
 // a virtual object
 cMultiMesh* scope;
@@ -323,7 +329,7 @@ int main(int argc, char* argv[])
     world->addChild(camera);
 
     // position and orient the camera
-    camera->set(cVector3d(1.5, 0.0, 0.0),    // camera position (eye)
+    camera->set(cVector3d(0.5, 0.0, 0.0),    // camera position (eye)
                 cVector3d(0.0, 0.0, 0.0),    // lookat position (target)
                 cVector3d(0.0, 0.0, 1.0));   // direction of the (up) vector
 
@@ -358,7 +364,7 @@ int main(int argc, char* argv[])
 
     // get access to the first available haptic device found
     //RONNY: handler->getDevice(hapticDevice, 0);
-	int com_port = 22;
+	int com_port = 13;
 	//std::cout << "Enter the COM Port:" << std::endl;
 	//std::cin >> com_port;
 	hapticDevice = UsartDevice::create(com_port);//RONNY
@@ -413,51 +419,54 @@ int main(int argc, char* argv[])
     // OBJECT "HEART"
     /////////////////////////////////////////////////////////////////////////
 
-    // create a virtual mesh
-    heart = new cMultiMesh();
+	// create a mesh
+	heart = new cMesh();
 
-    // add object to world
-    world->addChild(heart);
+	// create plane
+	cCreatePlane(heart, 0.3, 0.3);
 
-    // load an object file
-    bool fileload;
-    fileload = heart->loadFromFile(RESOURCE_PATH("../resources/models/heart/heart.3ds"));
+	// add object to world
+	world->addChild(heart);
 
-    if (!fileload)
-    {
-        #if defined(_MSVC)
-        fileload = heart->loadFromFile("../../../bin/resources/models/heart/heart.3ds");
-        #endif
-    }
-    if (!fileload)
-    {
-        cout << "Error - 3D Model failed to load correctly." << endl;
-        close();
-        return (-1);
-    }    
+	// create file name
+	string filename = "endoscope.jpg";
 
-    // disable culling so that faces are rendered on both sides
-    heart->setUseCulling(true);
+	// load an object file
+	//bool fileload;
+	//fileload = heart->loadFromFile(RESOURCE_PATH("../resources/images/"+filename));
 
-    // scale model
-    heart->scale(0.06);
+	bool fileload;
+	heart->m_texture = cTexture2d::create();
+	fileload = heart->m_texture->loadFromFile(RESOURCE_PATH("../resources/images/" + filename));
 
-    // compute collision detection algorithm
-    heart->createAABBCollisionDetector(toolRadius);
 
-    // define a default stiffness for the object
-    heart->setStiffness(0.1 * maxStiffness, true);
+	if (!fileload)
+	{
+		cout << "Error - 3D Model failed to load correctly." << endl;
+		close();
+		return (-1);
+	}
 
-    // use display list for faster rendering
-    heart->setUseDisplayList(true);
+	// scale model
+	heart->scale(0.6);
 
-    // position and orient object in scene
-    heart->setLocalPos(0.0, -0.2, 0.2);
-    heart->rotateExtrinsicEulerAnglesDeg(0, 0, 90, C_EULER_ORDER_YZX);
+	// compute collision detection algorithm
+	heart->createAABBCollisionDetector(toolRadius);
 
-    cMaterial mat;
-    mat.setHapticTriangleSides(true, true);
-    heart->setMaterial(mat);
+	// define a default stiffness for the object
+	heart->setStiffness(0.1 * maxStiffness, true);
+
+	// use display list for faster rendering
+	heart->setUseDisplayList(true);
+
+	// position and orient object in scene
+	heart->setLocalPos(-0.1, 0.0, 0.0);
+	//heart->rotateExtrinsicEulerAnglesDeg(0, 0, 90, C_EULER_ORDER_YZX);
+	heart->rotateExtrinsicEulerAnglesDeg(90, 0, 0, C_EULER_ORDER_YZX);
+
+	cMaterial mat;
+	mat.setHapticTriangleSides(true, true);
+	//heart->setMaterial(mat);
 
 
     /////////////////////////////////////////////////////////////////////////
@@ -489,8 +498,12 @@ int main(int argc, char* argv[])
     // disable culling so that faces are rendered on both sides
     scope->setUseCulling(false);
 
+	// enable texture mapping
+	heart->setUseTexture(true);
+	heart->m_material->setWhite();
+
     // scale model
-    scope->scale(0.1);
+    scope->scale(0.02);
 
     // use display list for faster rendering
     scope->setUseDisplayList(true);
@@ -514,6 +527,7 @@ int main(int argc, char* argv[])
     // set the near and far clipping planes of the camera
     // anything in front or behind these clipping planes will not be rendered
     cameraScope->setClippingPlanes(0.01, 100);
+
 
 
 
