@@ -376,35 +376,31 @@ int main(int argc, char* argv[])
 	double angle_limit = 45.0;
 	double zoom_limit = 0.04;
 	double angle_scale = 15.0;
-	double zoom_scale = 750.0;
-	double filter_resolution = 10000.0;
+	double zoom_scale = 10000.0;
+	double filter_resolution = 20000.0;
 	int polarity = -1;
 
 	double angle_limit_user = 45.0;
 	double zoom_limit_user = 0.04;
 	double angle_scale_user = 15.0;
-	double zoom_scale_user = 750.0;
+	double zoom_scale_user = 1000.0;
 	double filter_resolution_user = 10000.0;
 
-	std::cout << "Enter the scaling factor for zoom in/out. Default value is 750. Press 0 for default " << std::endl;
+	std::cout << "Enter the scaling factor for zoom in/out. Default value is 100. " << std::endl;
 	std::cout << "Zoom Scale: " << std::endl;
-	std::cin >> zoom_scale_user;
-	if (zoom_scale != 0)
-	{
-		zoom_scale = zoom_scale_user;
-	}
-	else
-		zoom_scale = 750.0;
+	std::cin >> zoom_scale;
+	zoom_scale = 100 * zoom_scale;
 
-	std::cout << "Enter the scaling factor for angles. Default value is 15. Press 0 for default " << std::endl;
+
+	std::cout << "Enter the scaling factor for angles. Default value is 15. " << std::endl;
 	std::cout << "Angle Scale: " << std::endl;
-	std::cin >> angle_scale_user;
-	if (angle_scale_user != 0)
-	{
-		angle_scale = angle_scale_user;
-	}
-	else
-		angle_scale = 15.0;
+	std::cin >> angle_scale;
+
+	std::cout << "Enter the polarity option. Press 1 for positive, press -1 for negative choice " << std::endl;
+	std::cout << "Polarity: " << std::endl;
+	std::cin >> polarity;
+	polarity = -polarity;
+
 
 	((UsartDevicePtr)temp)->config(angle_limit, zoom_limit, angle_scale, zoom_scale, filter_resolution, polarity);
 
