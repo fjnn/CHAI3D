@@ -33,12 +33,13 @@ namespace chai3d {
 	class UsartDevice : public cGenericHapticDevice {
 	private:
 		/* Calculation Parameters */
-		const double pivotOffset = 0.01;  //#TODO: set the correct pivot offset
-		const double angle_limit = 45.0;
-		const double zoom_limit = 0.04;  //#TODO: set an appropriate zoom limit
-		const double angle_scale = 15.0;
-		const double zoom_scale = 750.0;
-		const double filter_resolution = 10000.0;
+		double pivotOffset = 0.01;  //#TODO: set the correct pivot offset
+		double angle_limit = 45.0;
+		double zoom_limit = 0.04;  //#TODO: set an appropriate zoom limit
+		double angle_scale = 15.0;
+		double zoom_scale = 750.0;
+		double filter_resolution = 10000.0;
+		int polarity = 1;
 		/* Variables related to our Serial communication over USART */
 		Serial serial;  // This class provides our USART-USB functionality
 		int port;  // The port of our USART-USB device
@@ -63,6 +64,7 @@ namespace chai3d {
 		cHapticDeviceInfo getSpecifications();
 		// this functions is used to create an instance of this class and return a shared pointer to that instance
 		static UsartDevicePtr create(int port = 0) { return (std::make_shared<UsartDevice>(port)); }
+		void config(double angle_limit, double zoom_limit, double angle_scale, double zoom_scale, double filter_resolution, int polarity);
 
 	};
 }

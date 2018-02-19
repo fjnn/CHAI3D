@@ -42,6 +42,16 @@ namespace chai3d {
 	}
 
 	/*==================================================================*/
+	/* Set the configurable parameters */
+	void UsartDevice::config(double _angle_limit, double _zoom_limit, double _angle_scale, double _zoom_scale, double _filter_resolution, int _polarity) {
+		this->angle_limit = _angle_limit;
+		this->zoom_limit = _zoom_limit;  //#TODO: set an appropriate zoom limit 
+		this->angle_scale = _angle_scale;
+		this->zoom_scale = _zoom_scale;
+		this->filter_resolution = _filter_resolution;
+		this->polarity = _polarity;
+	}
+	/*==================================================================*/
 	/* Updates device's position and orientation */
 	void UsartDevice::updateDevice() {
 		// reset origin

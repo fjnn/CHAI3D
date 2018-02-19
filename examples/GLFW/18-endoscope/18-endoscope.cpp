@@ -190,13 +190,10 @@ int main(int argc, char* argv[])
     //--------------------------------------------------------------------------
 
     cout << endl;
-    cout << "-----------------------------------" << endl;
-    cout << "CHAI3D" << endl;
-    cout << "Demo: 18-endoscope" << endl;
-    cout << "Copyright 2003-2016" << endl;
+	cout << "----------------IRL-------------------" << endl;
+	cout << "IZTECH ROBOTICS LABORATORY" << endl;
+	cout << "Demo: Endoscope Simuation" << endl;
     cout << "-----------------------------------" << endl << endl << endl;
-    cout << "Keyboard Options:" << endl << endl;
-    cout << "[q] - Exit application" << endl;
     cout << endl << endl;
 
     // parse first arg to try and locate resources
@@ -367,7 +364,49 @@ int main(int argc, char* argv[])
 	int com_port = 13;
 	//std::cout << "Enter the COM Port:" << std::endl;
 	//std::cin >> com_port;
-	hapticDevice = UsartDevice::create(com_port);//RONNY
+	//hapticDevice = UsartDevice::create(com_port);//RONNY
+
+	std::cout << "In this simulation, the surgeon is allowed to arrange some parameters for his comfort" << std::endl << std::endl;
+	std::cout << "Before start, please enter the COM PORT which you checked from the Device Manager" << std::endl;
+	std::cout << "COM Port:" << std::endl;
+	std::cin >> com_port;
+	UsartDevicePtr temp = UsartDevice::create(com_port);
+	hapticDevice = temp;
+
+	double angle_limit = 45.0;
+	double zoom_limit = 0.04;
+	double angle_scale = 15.0;
+	double zoom_scale = 750.0;
+	double filter_resolution = 10000.0;
+	int polarity = 1;
+
+	double angle_limit_user = 45.0;
+	double zoom_limit_user = 0.04;
+	double angle_scale_user = 15.0;
+	double zoom_scale_user = 750.0;
+	double filter_resolution_user = 10000.0;
+
+	std::cout << "Enter the scaling factor for zoom in/out. Default value is 750. Press 0 for default " << std::endl;
+	std::cout << "Zoom Scale: " << std::endl;
+	std::cin >> zoom_scale_user;
+	if (zoom_scale != 0)
+	{
+		zoom_scale = zoom_scale_user;
+	}
+	else
+		zoom_scale = 750.0;
+
+	std::cout << "Enter the scaling factor for angles. Default value is 15. Press 0 for default " << std::endl;
+	std::cout << "Angle Scale: " << std::endl;
+	std::cin >> angle_scale_user;
+	if (angle_scale_user != 0)
+	{
+		angle_scale = angle_scale_user;
+	}
+	else
+		angle_scale = 15.0;
+
+	((UsartDevicePtr)temp)->config(angle_limit, zoom_limit, angle_scale, zoom_scale, filter_resolution, polarity);
 
     // retrieve information about the current haptic device
     cHapticDeviceInfo hapticDeviceInfo = hapticDevice->getSpecifications();
