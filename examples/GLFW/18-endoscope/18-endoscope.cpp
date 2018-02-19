@@ -322,7 +322,7 @@ int main(int argc, char* argv[])
     world = new cWorld();
 
     // set the background color of the environment
-    world->m_backgroundColor.setWhite();
+    world->m_backgroundColor.setBlack();
 
     // create a camera and insert it into the virtual world
     camera = new cCamera(world);
