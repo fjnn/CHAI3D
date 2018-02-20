@@ -408,7 +408,6 @@ int main(int argc, char* argv[])
 	std::cout << "Enter the polarity option for zoom. Press 1 for positive, press -1 for negative choice " << std::endl;
 	std::cout << "Polarity for zoom: " << std::endl;
 	std::cin >> polarity_zoom;
-	polarity_zoom = -polarity_zoom;
 
 	std::cout << "Enter the scaling factor for angles. " << std::endl;
 	std::cout << "FAST << <<  15 << << SLOW" << std::endl;
