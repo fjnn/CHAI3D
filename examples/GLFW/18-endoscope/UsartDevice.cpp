@@ -43,13 +43,14 @@ namespace chai3d {
 
 	/*==================================================================*/
 	/* Set the configurable parameters */
-	void UsartDevice::config(double _angle_limit, double _zoom_limit, double _angle_scale, double _zoom_scale, double _filter_resolution, int _polarity) {
+	void UsartDevice::config(double _angle_limit, double _zoom_limit, double _angle_scale, double _zoom_scale, double _filter_resolution, int _polarity_angle, int _polarity_zoom) {
 		this->angle_limit = _angle_limit;
 		this->zoom_limit = _zoom_limit;  //#TODO: set an appropriate zoom limit 
 		this->angle_scale = _angle_scale;
 		this->zoom_scale = _zoom_scale;
 		this->filter_resolution = _filter_resolution;
-		this->polarity = _polarity;
+		this->polarity_angle = _polarity_angle;
+		this->polarity_zoom = _polarity_zoom;
 	}
 	/*==================================================================*/
 	/* Updates device's position and orientation */
@@ -61,8 +62,8 @@ namespace chai3d {
 		this->origin.z(0.0);
 		
 		double theta1, theta2, s3;
-		theta1 = (this->angle.x())*this->polarity;
-		theta2 = -this->angle.z()*this->polarity;
+		theta1 = (this->angle.x())*this->polarity_angle;
+		theta2 = -this->angle.z()*this->polarity_angle;
 		s3 = zoom + this->pivotOffset;
 
 		if (abs(s3) > zoom_limit) {

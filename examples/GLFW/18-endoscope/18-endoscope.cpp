@@ -194,7 +194,14 @@ int main(int argc, char* argv[])
 	cout << "IZTECH ROBOTICS LABORATORY" << endl;
 	cout << "Demo: Endoscope Simuation" << endl;
     cout << "-----------------------------------" << endl << endl << endl;
-    cout << endl << endl;
+	cout << "---------------INSTRUCTIONS--------------------" << endl;
+	cout << "Please execute these commands at each simulation start" << endl;
+	cout << "1- Turn on the ring " << endl;
+	cout << "2- Restart the microcontroller with black button" << endl;
+	cout << "3- Wait until the blue LED stops blinking on the ring" << endl;
+	cout << "4- See the red LED is blinking on the serial device connected to computer"<< endl;
+	cout << "-----------------------------------" << endl << endl << endl;
+
 
     // parse first arg to try and locate resources
     resourceRoot = string(argv[0]).substr(0,string(argv[0]).find_last_of("/\\")+1);
@@ -362,10 +369,14 @@ int main(int argc, char* argv[])
     // get access to the first available haptic device found
     //RONNY: handler->getDevice(hapticDevice, 0);
 	int com_port = 13;
+	int wait_key = 0;
 	//std::cout << "Enter the COM Port:" << std::endl;
 	//std::cin >> com_port;
 	//hapticDevice = UsartDevice::create(com_port);//RONNY
 
+	std::cout << "Press 1 when it is ready" << std::endl << std::endl;
+	std::cin >> wait_key;
+	std::cout << std::endl << std::endl;
 	std::cout << "In this simulation, the surgeon is allowed to arrange some parameters for his comfort" << std::endl << std::endl;
 	std::cout << "Before start, please enter the COM PORT which you checked from the Device Manager" << std::endl;
 	std::cout << "COM Port:" << std::endl;
@@ -378,7 +389,9 @@ int main(int argc, char* argv[])
 	double angle_scale = 15.0;
 	double zoom_scale = 10000.0;
 	double filter_resolution = 20000.0;
-	int polarity = -1;
+	int polarity_angle = -1;
+	int polarity_zoom = -1;
+
 
 	double angle_limit_user = 45.0;
 	double zoom_limit_user = 0.04;
@@ -386,23 +399,29 @@ int main(int argc, char* argv[])
 	double zoom_scale_user = 1000.0;
 	double filter_resolution_user = 10000.0;
 
-	std::cout << "Enter the scaling factor for zoom in/out. Default value is 100. " << std::endl;
+	std::cout << "Enter the scaling factor for zoom in/out." << std::endl;
+	std::cout << "FAST << <<  100 << << SLOW" << std::endl;
 	std::cout << "Zoom Scale: " << std::endl;
 	std::cin >> zoom_scale;
 	zoom_scale = 100 * zoom_scale;
 
+	std::cout << "Enter the polarity option for zoom. Press 1 for positive, press -1 for negative choice " << std::endl;
+	std::cout << "Polarity for zoom: " << std::endl;
+	std::cin >> polarity_zoom;
+	polarity_zoom = -polarity_zoom;
 
-	std::cout << "Enter the scaling factor for angles. Default value is 15. " << std::endl;
+	std::cout << "Enter the scaling factor for angles. " << std::endl;
+	std::cout << "FAST << <<  15 << << SLOW" << std::endl;
 	std::cout << "Angle Scale: " << std::endl;
 	std::cin >> angle_scale;
 
-	std::cout << "Enter the polarity option. Press 1 for positive, press -1 for negative choice " << std::endl;
-	std::cout << "Polarity: " << std::endl;
-	std::cin >> polarity;
-	polarity = -polarity;
+	std::cout << "Enter the polarity option for translations. Press 1 for positive, press -1 for negative choice " << std::endl;
+	std::cout << "Polarity for translations: " << std::endl;
+	std::cin >> polarity_angle;
+	polarity_angle = -polarity_angle;
 
 
-	((UsartDevicePtr)temp)->config(angle_limit, zoom_limit, angle_scale, zoom_scale, filter_resolution, polarity);
+	((UsartDevicePtr)temp)->config(angle_limit, zoom_limit, angle_scale, zoom_scale, filter_resolution, polarity_angle, polarity_zoom);
 
     // retrieve information about the current haptic device
     cHapticDeviceInfo hapticDeviceInfo = hapticDevice->getSpecifications();
