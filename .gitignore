@@ -401,6 +401,7 @@ s
 *
 !.gitignore
 !/examples
+!/bin/resources/images/endoscope.jpg
 .vs/
 18-endoscope-VS2015.log
 *.tlog
