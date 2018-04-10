@@ -399,11 +399,11 @@ int main(int argc, char* argv[])
 	double zoom_scale_user = 1000.0;
 	double filter_resolution_user = 10000.0;
 
-	std::cout << "Enter the scaling factor for zoom in/out." << std::endl;
+	/*std::cout << "Enter the scaling factor for zoom in/out." << std::endl;
 	std::cout << "FAST << <<  100 << << SLOW" << std::endl;
 	std::cout << "Zoom Scale: " << std::endl;
 	std::cin >> zoom_scale;
-	zoom_scale = 100 * zoom_scale;
+	zoom_scale = 100 * 100;
 
 	std::cout << "Enter the polarity option for zoom. Press 1 for positive, press -1 for negative choice " << std::endl;
 	std::cout << "Polarity for zoom: " << std::endl;
@@ -417,7 +417,7 @@ int main(int argc, char* argv[])
 	std::cout << "Enter the polarity option for translations. Press 1 for positive, press -1 for negative choice " << std::endl;
 	std::cout << "Polarity for translations: " << std::endl;
 	std::cin >> polarity_angle;
-	polarity_angle = -polarity_angle;
+	polarity_angle = -polarity_angle;*/
 
 
 	((UsartDevicePtr)temp)->config(angle_limit, zoom_limit, angle_scale, zoom_scale, filter_resolution, polarity_angle, polarity_zoom);
