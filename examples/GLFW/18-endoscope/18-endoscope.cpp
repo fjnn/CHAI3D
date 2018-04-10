@@ -368,7 +368,7 @@ int main(int argc, char* argv[])
 
     // get access to the first available haptic device found
     //RONNY: handler->getDevice(hapticDevice, 0);
-	int com_port = 13;
+	int com_port = 9;
 	int wait_key = 0;
 	//std::cout << "Enter the COM Port:" << std::endl;
 	//std::cin >> com_port;
